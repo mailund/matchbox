@@ -3,6 +3,13 @@
 
 # pmtypes
 
+[![Travis build
+status](https://travis-ci.org/mailund/pmtypes.svg?branch=master)](https://travis-ci.org/mailund/pmtypes)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/lha3lixxcq3cvmhu/branch/master?svg=true)](https://ci.appveyor.com/project/mailund/pmtypes/branch/master)
+[![Coverage
+status](https://codecov.io/gh/mailund/pmtypes/branch/master/graph/badge.svg)](https://codecov.io/github/mailund/pmtypes?branch=master)
+
 The goal of pmtypes is to …
 
 ## Installation
