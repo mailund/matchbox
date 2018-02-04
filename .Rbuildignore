@@ -4,3 +4,8 @@
 ^codecov\.yml$
 ^LICENSE\.md$
 ^README\.Rmd$
+^appveyor\.yml$
+^SUPPORT\.md$
+^CONTRIBUTING\.md$
+^ISSUE_TEMPLATE\.md$
+^cran-comments\.md$
