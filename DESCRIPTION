@@ -4,10 +4,10 @@ Version: 0.0.0.9000
 Authors@R: person("Thomas", "Mailund", , "mailund@birc.au.dk", c("aut", "cre"))
 Description: Useful types implemented using the pmatch package.
 License: GPL-3
-Imports:
-    pmatch
 Depends: 
     R (>= 3.1)
+Imports:
+    pmatch
 Suggests: 
     covr (>= 3.0.1),
     testthat
