@@ -5,7 +5,7 @@ Authors@R: person("Thomas", "Mailund", , "mailund@birc.au.dk", c("aut", "cre"))
 Description: Useful data structures and algorithms implemented using pattern matching from the pmatch package.
 License: GPL-3
 Depends: 
-    R (>= 3.1)
+    R (>= 3.2)
 Imports:
     rlang,
     purrr,
@@ -19,3 +19,6 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
+Remotes:
+    mailund/tailr,
+    mailund/pmatch
