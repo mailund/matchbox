@@ -10,3 +10,4 @@
 ^ISSUE_TEMPLATE\.md$
 ^cran-comments\.md$
 ^CODE_OF_CONDUCT\.md$
+^cleanup\.R$
