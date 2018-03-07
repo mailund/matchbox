@@ -1,27 +1,27 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# pmtypes
+# matchbox
 
 [![Travis build
-status](https://travis-ci.org/mailund/pmtypes.svg?branch=master)](https://travis-ci.org/mailund/pmtypes)
+status](https://travis-ci.org/mailund/matchbox.svg?branch=master)](https://travis-ci.org/mailund/matchbox)
 [![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/lha3lixxcq3cvmhu/branch/master?svg=true)](https://ci.appveyor.com/project/mailund/pmtypes/branch/master)
+status](https://ci.appveyor.com/api/projects/status/lha3lixxcq3cvmhu/branch/master?svg=true)](https://ci.appveyor.com/project/mailund/matchbox/branch/master)
 [![Coverage
-status](https://codecov.io/gh/mailund/pmtypes/branch/master/graph/badge.svg)](https://codecov.io/github/mailund/pmtypes?branch=master)
+status](https://codecov.io/gh/mailund/matchbox/branch/master/graph/badge.svg)](https://codecov.io/github/mailund/matchbox?branch=master)
 [![Coverage
 Status](https://coveralls.io/repos/github/mailund/lc/badge.svg?branch=master)](https://coveralls.io/github/mailund/lc?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 
-The goal of pmtypes is to …
+The goal of matchbox is to …
 
 ## Installation
 
-You can install pmtypes from GitHub with:
+You can install matchbox from GitHub with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("mailund/pmtypes")
+devtools::install_github("mailund/matchbox")
 ```
 
 ## Example

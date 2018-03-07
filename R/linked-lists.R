@@ -1,2 +1,2 @@
-#' @import pmatch
-pmatch::`:=`(linked_lists, NIL | CONS(car, cdr:linked_lists))
+pmatch::`:=`(llist, NIL | CONS(car, cdr : llist))
+

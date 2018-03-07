@@ -1,4 +1,4 @@
 library(testthat)
-library(pmtypes)
+library(matchbox)
 
-test_check("pmtypes")
+test_check("matchbox")

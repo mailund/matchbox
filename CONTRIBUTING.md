@@ -1,4 +1,4 @@
-# Contributing to pmtypes
+# Contributing to matchbox
 
 -   [Prerequisites](#prerequisites)
 -   [PR Process](#pr-process)
@@ -15,7 +15,7 @@
 -   [Resources](#resources)
 -   [Code of Conduct](#code-of-conduct)
 
-This explains how to propose a change to pmtypes via a pull request using
+This explains how to propose a change to matchbox via a pull request using
 Git and GitHub. 
 
 For more general info about contributing to the tidyverse, see the 
@@ -33,14 +33,14 @@ your basic proposal for fixing it. If you’ve found a bug, first create a minim
 ### Fork, clone, branch
 
 The first thing you'll need to do is to [fork](https://help.github.com/articles/fork-a-repo/) 
-the [pmtypes GitHub repo](https://github.com/mailund/pmtypes), and 
+the [matchbox GitHub repo](https://github.com/mailund/matchbox), and 
 then clone it locally. We recommend that you create a branch for each PR.
 
 ### Check
 
 Before changing anything, make sure the package still passes `R CMD check`
 locally for you. When in doubt, compare your `R CMD check` results with current
-results for [pmtypes on Travis](https://travis-ci.org/mailund/pmtypes) (checks on Linux and/or 
+results for [matchbox on Travis](https://travis-ci.org/mailund/matchbox) (checks on Linux and/or 
 MacOS) and, if applicable, AppVeyor (checks on Windows). You'll do this again
 before you finalize your pull request, but this baseline will make it easier to
 pinpoint any problems introduced by your changes.

@@ -1,12 +1,15 @@
-Package: pmtypes
-Title: Pattern Matching Types
+Package: matchbox
+Title: Data structures and algorithms implemented using pattern matching
 Version: 0.0.0.9000
 Authors@R: person("Thomas", "Mailund", , "mailund@birc.au.dk", c("aut", "cre"))
-Description: Useful types implemented using the pmatch package.
+Description: Useful data structures and algorithms implemented using pattern matching from the pmatch package.
 License: GPL-3
 Depends: 
     R (>= 3.1)
 Imports:
+    rlang,
+    purrr,
+    glue,
     pmatch
 Suggests: 
     covr (>= 3.0.1),
