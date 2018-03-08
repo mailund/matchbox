@@ -41,7 +41,7 @@ llength <- function(llist, acc = 0) {
         CONS(car, cdr) -> llength(cdr, acc + 1)
     )
 }
-llength <- tailr::loop_transform(llength)
+#llength <- tailr::loop_transform(llength)
 
 #' Reverse a linked list.
 #'
@@ -59,7 +59,7 @@ llrev <- function(llist, acc = NIL) {
         CONS(car, cdr) -> llrev(cdr, CONS(car, acc))
     )
 }
-llrev <- tailr::loop_transform(llrev)
+#llrev <- tailr::loop_transform(llrev)
 
 
 #' Translate a list object into a linked list.
