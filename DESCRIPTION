@@ -10,7 +10,8 @@ Imports:
     rlang,
     purrr,
     glue,
-    pmatch
+    pmatch,
+    tailr
 Suggests: 
     covr (>= 3.0.1),
     testthat
