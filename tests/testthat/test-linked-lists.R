@@ -12,7 +12,8 @@ test_that("we can construct linked lists", {
         pmatch::cases(
             lst,
             NIL -> 1,
-            CONS(elm, NIL) -> elm),
+            CONS(elm, NIL) -> elm
+        ),
         2
     )
 })
@@ -47,7 +48,7 @@ test_that("we can take and drop", {
 
 test_that("we can map over a list", {
     lst <- llist_from_list(1:4)
-    lst2 <- llmap(lst, function(x) 2*x)
+    lst2 <- llmap(lst, function(x) 2 * x)
     expect_equal(as.vector(lst2), 2 * 1:4)
 })
 

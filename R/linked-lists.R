@@ -22,7 +22,7 @@ print.llist <- function(x, ...) {}
 #' @export
 toString.llist <- function(x, ...) {}
 
-pmatch::`:=`(llist, NIL | CONS(car, cdr : llist))
+pmatch::`:=`(llist, NIL | CONS(car, cdr:llist))
 
 #' Compute the length of a linked list.
 #'
@@ -68,11 +68,12 @@ llrev <- tailr::loop_transform(llrev)
 #' @return `TRUE` if `elm` is in `llist` and `FALSE` otherwise
 #' @export
 llcontains <- function(llist, elm) {
+    f <- FALSE  # trick to fool lintr
     pmatch::cases(
         llist,
-        NIL -> FALSE,
+        NIL -> f,
         CONS(car, cdr) ->
-            if (car == elm) TRUE else llcontains(cdr, elm)
+        if (car == elm) TRUE else llcontains(cdr, elm)
     )
 }
 llcontains <- tailr::loop_transform(llcontains)
@@ -88,7 +89,9 @@ lltake <- function(llist, k, acc = NIL) {
     if (k == 0) return(llrev(acc))
     pmatch::cases(
         llist,
-        NIL -> stop("There were less than k elements in the list"),
+        # the do.call is a trick to make the function pass the
+        # byte-compile function
+        NIL -> do.call(stop, "There were less than k elements in the list"),
         CONS(car, cdr) -> lltake(cdr, k - 1, CONS(car, acc))
     )
 }
@@ -104,7 +107,9 @@ lldrop <- function(llist, k, acc = NIL) {
     if (k == 0) return(llist)
     pmatch::cases(
         llist,
-        NIL -> stop("There were less than k elements in the list"),
+        # the do.call is a trick to make the function pass the
+        # byte-compile function
+        NIL -> do.call(stop, "There were less than k elements in the list"),
         CONS(car, cdr) -> lldrop(cdr, k - 1)
     )
 }
@@ -136,11 +141,15 @@ llfilter <- function(llist, p, acc = NIL) {
         llist,
         NIL -> llrev(acc),
         CONS(car, cdr) ->
-            if (p(car)) llfilter(cdr, p, CONS(car, acc))
-            else llfilter(cdr, p, acc)
+        if (p(car)) {
+              llfilter(cdr, p, CONS(car, acc))
+          } else {
+              llfilter(cdr, p, acc)
+          }
     )
 }
 llfilter <- tailr::loop_transform(llfilter)
+
 #' Translate a list object into a linked list.
 #'
 #' @param x A `list` object
