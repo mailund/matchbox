@@ -6,6 +6,7 @@ test_that("we can construct linked lists", {
         pmatch::cases(lst, NIL -> 1),
         1
     )
+    expect_true(is_llist_empty(lst))
 
     lst <- CONS(2, NIL)
     expect_equal(
@@ -16,6 +17,7 @@ test_that("we can construct linked lists", {
         ),
         2
     )
+    expect_false(is_llist_empty(lst))
 })
 
 test_that("we can compute the length of a list", {

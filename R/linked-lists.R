@@ -24,6 +24,20 @@ toString.llist <- function(x, ...) {}
 
 pmatch::`:=`(llist, NIL | CONS(car, cdr:llist))
 
+#' Tests if a linked list is empty
+#'
+#' @param llist The list
+#' @export
+is_llist_empty <- function(llist) {
+    t <- TRUE
+    f <- FALSE # to satisfy lintr
+    pmatch::cases(
+        llist,
+        NIL -> t,
+        otherwise -> f
+    )
+}
+
 #' Compute the length of a linked list.
 #'
 #' This function computes the length of a linked list by scanning
@@ -68,7 +82,7 @@ llrev <- tailr::loop_transform(llrev)
 #' @return `TRUE` if `elm` is in `llist` and `FALSE` otherwise
 #' @export
 llcontains <- function(llist, elm) {
-    f <- FALSE  # trick to fool lintr
+    f <- FALSE # trick to fool lintr
     pmatch::cases(
         llist,
         NIL -> f,
@@ -142,10 +156,10 @@ llfilter <- function(llist, p, acc = NIL) {
         NIL -> llrev(acc),
         CONS(car, cdr) ->
         if (p(car)) {
-              llfilter(cdr, p, CONS(car, acc))
-          } else {
-              llfilter(cdr, p, acc)
-          }
+            llfilter(cdr, p, CONS(car, acc))
+        } else {
+            llfilter(cdr, p, acc)
+        }
     )
 }
 llfilter <- tailr::loop_transform(llfilter)
