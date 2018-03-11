@@ -1,6 +1,6 @@
 Package: matchbox
 Title: Data structures and algorithms implemented using pattern matching
-Version: 0.0.0.9002
+Version: 0.0.0.9003
 Authors@R: person("Thomas", "Mailund", , "mailund@birc.au.dk", c("aut", "cre"))
 Description: Useful data structures and algorithms implemented using pattern matching from the pmatch package.
 License: GPL-3
