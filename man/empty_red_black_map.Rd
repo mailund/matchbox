@@ -7,5 +7,7 @@
 empty_red_black_map()
 }
 \description{
-Create an empty red-black tree representation for a map
+While we do have \code{RBT_SET_EMPTY} to represent an empty tree, the rotations are
+simpler to implement if leaves are actually inner nodes with colours and just not
+containing any value.
 }

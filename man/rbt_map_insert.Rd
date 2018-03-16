@@ -2,17 +2,17 @@
 % Please edit documentation in R/red-black-trees.R
 \name{rbt_map_insert}
 \alias{rbt_map_insert}
-\title{Insert an element into a red-black tree map.}
+\title{Insert an element into a red-black tree map}
 \usage{
 rbt_map_insert(tree, key, val)
 }
 \arguments{
 \item{tree}{The set}
 
-\item{key}{The key for the inserted element}
+\item{key}{The key of the element to insert}
 
-\item{val}{The value of the inserted element}
+\item{val}{The value of the element to insert}
 }
 \description{
-Insert an element into a red-black tree map.
+Insert an element into a red-black tree map
 }

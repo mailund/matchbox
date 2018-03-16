@@ -39,3 +39,28 @@ test_that("we can insert into a red-black tree map and check membership", {
     }
     expect_false(rbt_map_member(tree, 11))
 })
+
+test_that("we can delete from a red-black tree set", {
+    tree <- empty_red_black_set()
+    expect_true(is_red_black_set_empty(tree))
+
+    for (v in sample(1:10)) {
+        tree <- rbt_set_insert(tree, v)
+    }
+    expect_false(is_red_black_set_empty(tree))
+
+    expect_false(rbt_set_member(tree, 0))
+    for (v in sample(1:10)) {
+        expect_true(rbt_set_member(tree, v))
+    }
+    expect_false(rbt_set_member(tree, 11))
+
+    for (v in sample(2:9)) {
+        tree <- rbt_set_remove(tree, v)
+    }
+    for (v in sample(2:9)) {
+        expect_false(rbt_set_member(tree, v))
+    }
+    expect_true(rbt_set_member(tree, 1))
+    expect_true(rbt_set_member(tree, 10))
+})

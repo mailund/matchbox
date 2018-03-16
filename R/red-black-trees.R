@@ -89,8 +89,16 @@ pmatch::`:=`(rbt_map, RBT_MAP_EMPTY | RBT_MAP(
 
 #' Create an empty red-black tree representation for a set.
 #'
+#' While we do have `RBT_SET_EMPTY` to represent an empty tree, the rotations are
+#' simpler to implement if leaves are actually inner nodes with colours and just not
+#' containing any value.
+#'
 #' @export
-empty_red_black_set <- function() RBT_SET_EMPTY
+empty_red_black_set <- function()
+    RBT_SET(RBT_BLACK,
+            NA,
+            RBT_SET_EMPTY,
+            RBT_SET_EMPTY)
 
 #' Check if a tree is empty
 #' @export
@@ -100,6 +108,7 @@ is_red_black_set_empty <- function(tree) {
     pmatch::cases(
         tree,
         RBT_SET_EMPTY -> t,
+        RBT_SET(col, val, RBT_SET_EMPTY, RBT_SET_EMPTY) -> is.na(val),
         otherwise -> f
     )
 }
@@ -107,6 +116,7 @@ is_red_black_set_empty <- function(tree) {
 rbt_set_balance <- function(tree) { # fixme: add deletion transformations
     pmatch::cases(
         tree,
+
         RBT_SET(RBT_BLACK, z, RBT_SET(RBT_RED, x, a, RBT_SET(RBT_RED, y, b, c)), d) ->
         RBT_SET(RBT_RED, y, RBT_SET(RBT_BLACK, x, a, b), RBT_SET(RBT_BLACK, z, c, d)),
         RBT_SET(RBT_BLACK, z, RBT_SET(RBT_RED, y, RBT_SET(RBT_RED, x, a, b), c), d) ->
@@ -115,6 +125,7 @@ rbt_set_balance <- function(tree) { # fixme: add deletion transformations
         RBT_SET(RBT_RED, y, RBT_SET(RBT_BLACK, x, a, b), RBT_SET(RBT_BLACK, z, c, d)),
         RBT_SET(RBT_BLACK, x, a, RBT_SET(RBT_RED, z, RBT_SET(RBT_RED, y, b, c), d)) ->
         RBT_SET(RBT_RED, y, RBT_SET(RBT_BLACK, x, a, b), RBT_SET(RBT_BLACK, z, c, d)),
+
         otherwise -> tree
     )
 }
@@ -153,7 +164,12 @@ set_make_right_cont <- function(tree, cont) {
 rbt_set_insert_ <- function(tree, elm, cont) {
     if (is_red_black_set_empty(tree)) {
         return(
-            trampoline(cont(RBT_SET(RBT_RED, elm, RBT_SET_EMPTY, RBT_SET_EMPTY)))
+            trampoline(cont(RBT_SET(
+                RBT_RED,
+                elm,
+                empty_red_black_set(),
+                empty_red_black_set()
+            )))
         )
     }
 
@@ -178,6 +194,81 @@ rbt_set_insert <- function(tree, elm) {
     tree
 }
 
+
+rbt_leftmost <- function(tree, empty_check) {
+    while (!empty_check(tree)) {
+        val <- tree$val
+        tree <- tree$left
+    }
+    val
+}
+rbt_set_leftmost <- function(tree)
+    rbt_leftmost(tree, is_red_black_set_empty)
+rbt_map_leftmost <- function(tree)
+    rbt_leftmost(tree, is_red_black_map_empty)
+
+#' @export
+rbt_set_remove <- function(tree, elm) {
+    if (is_red_black_set_empty(tree)) { # we didn't find the value...
+        return(tree)
+    }
+
+    if (tree$val == elm) { # found the value to delete
+        a <- tree$left
+        b <- tree$right
+        if (is_red_black_set_empty(a) && is_red_black_set_empty(b)) { # leaf
+            updated_tree <- pmatch::cases(
+                tree$col,
+                RBT_BLACK -> RBT_SET(
+                    RBT_DOUBLE_BLACK,
+                    NA,
+                    empty_red_black_set(),
+                    empty_red_black_set()
+                ),
+                otherwise -> RBT_SET(
+                    RBT_BLACK,
+                    NA,
+                    empty_red_black_set(),
+                    empty_red_black_set()
+                )
+            )
+            return(updated_tree)
+
+        } else if (is_red_black_set_empty(a) || is_red_black_set_empty(b)) {
+            # one empty child
+            non_empty <- if (is_red_black_set_empty(a)) b else a
+            non_empty$col <- RBT_BLACK
+            return(non_empty)
+
+        } else {
+            # inner node
+            s <- rbt_set_leftmost(tree$right)
+            return(rbt_set_balance(RBT_SET(
+                tree$col,
+                s,
+                a,
+                rbt_set_remove(b, s)
+            )))
+        }
+    }
+
+    # we need to search further down to remove the element
+    if (elm < tree$val)
+        rbt_set_balance(RBT_SET(
+            tree$col,
+            tree$val,
+            rbt_set_remove(tree$left, elm),
+            tree$right
+        ))
+    else # (elm > tree$val)
+        rbt_set_balance(RBT_SET(
+            tree$col,
+            tree$val,
+            tree$left,
+            rbt_set_remove(tree$right, elm)
+        ))
+}
+
 #' Determines if a red-black tree contains the value `v`
 #'
 #' @param tree The red-black tree
@@ -188,7 +279,10 @@ rbt_set_member <- function(tree, v) {
     f <- FALSE
     pmatch::cases(
         tree,
+        # two versions of empty trees. The first should actually never be seen
         RBT_SET_EMPTY -> f,
+        RBT_SET(col, val, RBT_SET_EMPTY, RBT_SET_EMPTY) -> f,
+        # non-empty tree
         RBT_SET(col, val, left, right) -> {
             if (val == v) {
                   t
@@ -204,8 +298,13 @@ rbt_set_member <- tailr::loop_transform(rbt_set_member)
 
 #' Create an empty red-black tree representation for a map
 #'
+#' While we do have `RBT_SET_EMPTY` to represent an empty tree, the rotations are
+#' simpler to implement if leaves are actually inner nodes with colours and just not
+#' containing any value.
+#'
 #' @export
-empty_red_black_map <- function() RBT_MAP_EMPTY
+empty_red_black_map <- function()
+    RBT_MAP(RBT_BLACK, NA, NA, RBT_MAP_EMPTY, RBT_MAP_EMPTY)
 
 #' Check if a tree is empty
 #' @export
@@ -215,6 +314,7 @@ is_red_black_map_empty <- function(tree) {
     pmatch::cases(
         tree,
         RBT_MAP_EMPTY -> t,
+        RBT_MAP(col, key, val, RBT_MAP_EMPTY, RBT_MAP_EMPTY) -> t,
         otherwise -> f
     )
 }
@@ -302,7 +402,12 @@ map_make_right_cont <- function(tree, cont) {
 rbt_map_insert_ <- function(tree, key, val, cont) {
     if (is_red_black_map_empty(tree)) {
         return(
-            trampoline(cont(RBT_MAP(RBT_RED, key, val, RBT_MAP_EMPTY, RBT_MAP_EMPTY)))
+            trampoline(cont(RBT_MAP(
+                RBT_RED,
+                key, val,
+                empty_red_black_map(),
+                empty_red_black_map()
+            )))
         )
     }
 
@@ -340,6 +445,7 @@ rbt_map_member <- function(tree, k) {
     pmatch::cases(
         tree,
         RBT_MAP_EMPTY -> f,
+        RBT_MAP(col, key, val, RBT_MAP_EMPTY, RBT_MAP_EMPTY) -> f,
         RBT_MAP(col, key, val, left, right) -> {
             if (key == k) {
                   t
