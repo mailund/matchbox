@@ -11,7 +11,13 @@
       "DONE",
       "PLANNING",
       "FIXME",
+      "ARCHIVE",
+      "HACK",
+      "CHANGED",
+      "XXX",
+      "IDEA",
       "NOTE",
+      "REVIEW"
     ]
   },
   "lists": [],
