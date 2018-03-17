@@ -13,7 +13,7 @@ Imports:
     pmatch (>= 0.1.2),
     tailr (>= 0.1.1)
 Suggests: 
-    covr (>= 3.0.1),
+    covr (>= 3.0.0),
     testthat
 ByteCompile: true
 Encoding: UTF-8
