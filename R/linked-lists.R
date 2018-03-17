@@ -1,6 +1,8 @@
 
 # dummy variables for documentation
 
+otherwise <- NULL
+
 #' An empty list
 #' @export
 NIL <- NULL
@@ -82,12 +84,11 @@ llrev <- tailr::loop_transform(llrev)
 #' @return `TRUE` if `elm` is in `llist` and `FALSE` otherwise
 #' @export
 llcontains <- function(llist, elm) {
-    f <- FALSE # trick to fool lintr
     pmatch::cases(
         llist,
-        NIL -> f,
+        NIL -> FALSE,
         CONS(car, cdr) ->
-        if (car == elm) TRUE else llcontains(cdr, elm)
+            if (car == elm) TRUE else llcontains(cdr, elm)
     )
 }
 llcontains <- tailr::loop_transform(llcontains)
@@ -103,9 +104,7 @@ lltake <- function(llist, k, acc = NIL) {
     if (k == 0) return(llrev(acc))
     pmatch::cases(
         llist,
-        # the do.call is a trick to make the function pass the
-        # byte-compile function
-        NIL -> do.call(stop, "There were less than k elements in the list"),
+        NIL -> stop("There were less than k elements in the list"),
         CONS(car, cdr) -> lltake(cdr, k - 1, CONS(car, acc))
     )
 }
@@ -122,9 +121,7 @@ lldrop <- function(llist, k, acc = NIL) {
     if (k == 0) return(llist)
     pmatch::cases(
         llist,
-        # the do.call is a trick to make the function pass the
-        # byte-compile function
-        NIL -> do.call(stop, "There were less than k elements in the list"),
+        NIL -> stop("There were less than k elements in the list"),
         CONS(car, cdr) -> lldrop(cdr, k - 1)
     )
 }
