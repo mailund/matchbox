@@ -6,6 +6,9 @@
 \usage{
 is_red_black_set_empty(tree)
 }
+\arguments{
+\item{tree}{Tree we check whether is empty.}
+}
 \description{
 Check if a tree is empty
 }

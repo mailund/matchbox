@@ -115,6 +115,7 @@ lltake <- tailr::loop_transform(lltake)
 #'
 #' @param llist The linked list
 #' @param k     The number of elements to remove
+#' @param acc   Accumulator needed to make the function tail-recursive.
 #' @return The list without the first k elements
 #' @export
 lldrop <- function(llist, k, acc = NIL) {

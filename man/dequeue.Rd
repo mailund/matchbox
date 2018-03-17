@@ -8,8 +8,6 @@ dequeue(queue)
 }
 \arguments{
 \item{queue}{The queue}
-
-\item{elm}{An element to add to the queue}
 }
 \value{
 The modified queue

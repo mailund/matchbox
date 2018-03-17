@@ -10,6 +10,8 @@ lldrop(llist, k, acc = NIL)
 \item{llist}{The linked list}
 
 \item{k}{The number of elements to remove}
+
+\item{acc}{Accumulator needed to make the function tail-recursive.}
 }
 \value{
 The list without the first k elements

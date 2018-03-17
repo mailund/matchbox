@@ -53,7 +53,6 @@ front <- function(queue) {
 #' Remove an element from the front of a queue
 #'
 #' @param queue The queue
-#' @param elm   An element to add to the queue
 #' @return The modified queue
 #' @export
 dequeue <- function(queue) {

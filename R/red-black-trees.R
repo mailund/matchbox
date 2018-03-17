@@ -93,6 +93,9 @@ pmatch::`:=`(rbt_map, RBT_MAP_EMPTY | RBT_MAP(
 empty_red_black_set <- function() RBT_SET_EMPTY
 
 #' Check if a tree is empty
+#'
+#' @param tree Tree we check whether is empty.
+#'
 #' @export
 is_red_black_set_empty <- function(tree) {
     t <- TRUE
@@ -208,6 +211,9 @@ rbt_set_member <- tailr::loop_transform(rbt_set_member)
 empty_red_black_map <- function() RBT_MAP_EMPTY
 
 #' Check if a tree is empty
+#'
+#' @param tree Tree we check whether is empty.
+#'
 #' @export
 is_red_black_map_empty <- function(tree) {
     t <- TRUE
