@@ -77,6 +77,28 @@ llrev <- function(llist, acc = NIL) {
 }
 llrev <- tailr::loop_transform(llrev)
 
+# FIXME: Figure out how to avoid putting this ouside llconcat
+mk_closure <- function(car, cnt) {
+    force(car)
+    force(cnt)
+    function(cdr) cnt(CONS(car, cdr))
+}
+#' Concatenates two linked lists.
+#'
+#' @param l1  First list.
+#' @param l2  Second list.
+#' @param cnt Continuation to make the function tail-recursive
+#' @return The concatenation of `l1` and `l2`.
+#' @export
+# FIXME: use a trampoline for cnt.
+llconcat <- function(l1, l2, cnt = identity) {
+    pmatch::cases(l1,
+                  NIL -> cnt(l2),
+                  CONS(car, cdr) -> llconcat(cdr, l2, mk_closure(car, cnt)))
+}
+llconcat <- tailr::loop_transform(llconcat)
+
+
 #' Checks if a linked list contains an element
 #'
 #' @param llist The linked list

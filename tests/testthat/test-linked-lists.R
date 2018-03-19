@@ -31,6 +31,12 @@ test_that("we can reverse a list", {
     expect_equal(as.vector(rlst), c(3, 2, 1))
 })
 
+test_that("we can concatenate two lists", {
+    l1 <- CONS(1, CONS(2, CONS(3, NIL)))
+    l2 <- CONS(4, CONS(5, CONS(6, NIL)))
+    expect_equal(as.vector(llconcat(l1, l2)), as.numeric(1:6))
+})
+
 test_that("we can check for containment", {
     lst <- llist_from_list(1:3)
     expect_false(llcontains(lst, 0))
