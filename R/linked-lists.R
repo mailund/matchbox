@@ -155,6 +155,7 @@ lldrop <- tailr::loop_transform(lldrop)
 #' @param llist The linked list
 #' @param f     The function to apply to all elements in `llist`
 #' @param acc   Accumulator to make the function tail-recursive
+#' @export
 llmap <- function(llist, f, acc = NIL) {
     pmatch::cases(
         llist,
