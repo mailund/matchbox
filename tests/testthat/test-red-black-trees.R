@@ -38,4 +38,9 @@ test_that("we can insert into a red-black tree map and check membership", {
         expect_true(rbt_map_member(tree, v))
     }
     expect_false(rbt_map_member(tree, 11))
+
+    for (v in sample(1:10)) {
+        expect_equal(rbt_map_get(tree, v), v)
+    }
+
 })

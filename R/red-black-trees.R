@@ -317,7 +317,9 @@ rbt_map_insert_ <- function(tree, key, val, cont) {
     } else if (key > tree$key) {
         rbt_map_insert_(tree$right, key, val, map_make_right_cont(tree, cont))
     } else {
-        trampoline(cont(tree))
+        # we found the node, so we update with new information
+        new_tree <- RBT_MAP(tree$col, key, val, tree$left, tree$right)
+        trampoline(cont(new_tree))
     }
 }
 rbt_map_insert_ <- tailr::loop_transform(rbt_map_insert_)
@@ -358,3 +360,26 @@ rbt_map_member <- function(tree, k) {
     )
 }
 rbt_map_member <- tailr::loop_transform(rbt_map_member)
+
+
+#' Get the value associated with a key.
+#'
+#' @param tree The red-black tree
+#' @param k    The key to search for
+#' @export
+rbt_map_get <- function(tree, k) {
+    pmatch::cases(
+        tree,
+        RBT_MAP_EMPTY -> stop("The key was not found."),
+        RBT_MAP(col, key, val, left, right) -> {
+            if (key == k) {
+                val
+            } else if (key > k) {
+                rbt_map_get(left, k)
+            } else {
+                rbt_map_get(right, k)
+            }
+        }
+    )
+}
+rbt_map_get <- tailr::loop_transform(rbt_map_get)
