@@ -11,7 +11,7 @@ Imports:
     purrr,
     glue,
     pmatch (>= 0.1.2),
-    tailr (>= 0.1.1)
+    tailr (>= 0.1.1.9002)
 Suggests: 
     covr (>= 3.0.0),
     testthat
@@ -20,4 +20,4 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
-
+Remotes: mailund/tailr
