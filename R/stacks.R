@@ -11,14 +11,13 @@ empty_stack <- function() NIL
 #' @return `TRUE` if `stack` is empty, `FALSE` otherwise
 #' @export
 is_stack_empty <- function(stack) {
-    t <- TRUE
-    f <- FALSE # trick to avoid byte-compile errors
     pmatch::cases(
         stack,
-        NIL -> t,
-        otherwise -> f
+        NIL -> TRUE,
+        otherwise -> FALSE
     )
 }
+is_stack_empty <- pmatch::transform_cases_function(is_stack_empty)
 
 #' Push an element onto a stack.
 #'
@@ -38,10 +37,11 @@ top <- function(stack) {
         stack,
         # the do.call is a trick to make the function pass the
         # byte-compile function
-        NIL -> do.call(stop, "You cannot get the top of an empty stack."),
+        NIL -> stop("You cannot get the top of an empty stack."),
         CONS(car, cdr) -> car
     )
 }
+top <- pmatch::transform_cases_function(top)
 
 #' Remove the top element from a stack
 #'
@@ -52,8 +52,7 @@ pop <- function(stack) {
     pmatch::cases(
         stack,
         CONS(car, cdr) -> cdr,
-        # the do.call is a trick to make the function pass the
-        # byte-compile function
-        NIL -> do.call(stop, "You cannot pop an empty stack.")
+        NIL -> stop("You cannot pop an empty stack.")
     )
 }
+pop <- pmatch::transform_cases_function(pop)

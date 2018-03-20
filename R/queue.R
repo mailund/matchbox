@@ -1,3 +1,7 @@
+# make CMD CHECK shut up!
+car <- cdr <- NULL
+
+
 #' Create an empty queue
 #' @export
 empty_queue <- function() list(front = NIL, back = NIL)
@@ -43,11 +47,13 @@ front <- function(queue) {
     queue <- move_lists(queue)
     front <- pmatch::cases(
         queue$front,
-        NIL -> do.call(stop, "You cannot get the top element from an empty queue"),
+        NIL -> stop("You cannot get the top element from an empty queue"),
         CONS(car, cdr) -> car
     )
     list(front = front, queue = queue)
 }
+front <- pmatch::transform_cases_function(front)
+
 
 
 #' Remove an element from the front of a queue
@@ -59,8 +65,9 @@ dequeue <- function(queue) {
     queue <- move_lists(queue)
     queue$front <- pmatch::cases(
         queue$front,
-        NIL -> do.call(stop, "You cannot remove the top element from an empty queue"),
+        NIL -> stop("You cannot remove the top element from an empty queue"),
         CONS(car, cdr) -> cdr
     )
     queue
 }
+dequeue <- pmatch::transform_cases_function(dequeue)

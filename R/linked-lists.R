@@ -1,7 +1,7 @@
+# to shut up CMD CHECK
+car <- cdr <- otherwise <- NULL
 
 # dummy variables for documentation
-
-otherwise <- NULL
 
 #' An empty list
 #' @export

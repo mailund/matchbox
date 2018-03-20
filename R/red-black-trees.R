@@ -1,3 +1,9 @@
+# To shut up CMD CHECK
+key <- val <- xkey <- xval <- ykey <- yval <- zkey <- zval <- NULL
+x <- y <- z <- NULL
+a <- b <- d <- NULL
+right <- left <- NULL
+
 
 #' Colour used in red-black trees.
 #' @export
@@ -98,14 +104,14 @@ empty_red_black_set <- function() RBT_SET_EMPTY
 #'
 #' @export
 is_red_black_set_empty <- function(tree) {
-    t <- TRUE
-    f <- FALSE
     pmatch::cases(
         tree,
-        RBT_SET_EMPTY -> t,
-        otherwise -> f
+        RBT_SET_EMPTY -> TRUE,
+        otherwise -> FALSE
     )
 }
+is_red_black_set_empty <-
+    pmatch::transform_cases_function(is_red_black_set_empty)
 
 rbt_set_balance <- function(tree) { # fixme: add deletion transformations
     pmatch::cases(
@@ -121,6 +127,7 @@ rbt_set_balance <- function(tree) { # fixme: add deletion transformations
         otherwise -> tree
     )
 }
+rbt_set_balance <- pmatch::transform_cases_function(rbt_set_balance)
 
 make_thunk <- function(f, ...) {
     force(f)
@@ -187,14 +194,12 @@ rbt_set_insert <- function(tree, elm) {
 #' @param v    The value to search for
 #' @export
 rbt_set_member <- function(tree, v) {
-    t <- TRUE
-    f <- FALSE
     pmatch::cases(
         tree,
-        RBT_SET_EMPTY -> f,
+        RBT_SET_EMPTY -> FALSE,
         RBT_SET(col, val, left, right) -> {
             if (val == v) {
-                  t
+                  TRUE
               } else if (val > v) {
                   rbt_set_member(left, v)
               } else {
@@ -216,14 +221,14 @@ empty_red_black_map <- function() RBT_MAP_EMPTY
 #'
 #' @export
 is_red_black_map_empty <- function(tree) {
-    t <- TRUE
-    f <- FALSE
     pmatch::cases(
         tree,
-        RBT_MAP_EMPTY -> t,
-        otherwise -> f
+        RBT_MAP_EMPTY -> TRUE,
+        otherwise -> FALSE
     )
 }
+is_red_black_map_empty <-
+    pmatch::transform_cases_function(is_red_black_map_empty)
 
 rbt_map_balance <- function(tree) { # fixme: add deletion transformations
     pmatch::cases(
@@ -282,7 +287,7 @@ rbt_map_balance <- function(tree) { # fixme: add deletion transformations
         otherwise -> tree
     )
 }
-
+rbt_map_balance <- pmatch::transform_cases_function(rbt_map_balance)
 
 map_make_left_cont <- function(tree, cont) {
     force(tree)
