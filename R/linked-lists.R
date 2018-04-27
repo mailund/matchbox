@@ -1,5 +1,3 @@
-# to shut up CMD CHECK
-car <- cdr <- otherwise <- NULL
 
 # dummy variables for documentation
 
@@ -11,34 +9,20 @@ NIL <- NULL
 #' @param cdr  The remainder of the list
 #' @return A new list
 #' @export
-CONS <- function(car, cdr) {}
+CONS <- function(car, cdr) {} # nolint
 #' Print linked list objects
 #' @param x   The linked list
 #' @param ... Additional parameters (not used in this version)
 #' @export
-print.llist <- function(x, ...) {}
+print.llist <- function(x, ...) {} # nolint
 #' Make a string-representation of a linked list.
 #' @param x The linked list
 #' @param ... Additional parameters (not used in this version)
 #' @return A string representation of the list
 #' @export
-toString.llist <- function(x, ...) {}
+toString.llist <- function(x, ...) {} # nolint
 
 pmatch::`:=`(llist, NIL | CONS(car, cdr:llist))
-
-#' Tests if a linked list is empty
-#'
-#' @param llist The list
-#' @export
-is_llist_empty <- function(llist) {
-    t <- TRUE
-    f <- FALSE # to satisfy lintr
-    pmatch::cases(
-        llist,
-        NIL -> t,
-        otherwise -> f
-    )
-}
 
 #' Compute the length of a linked list.
 #'
@@ -77,84 +61,48 @@ llrev <- function(llist, acc = NIL) {
 }
 llrev <- tailr::loop_transform(llrev)
 
-# FIXME: Figure out how to avoid putting this ouside llconcat
-mk_closure <- function(car, cnt) {
-    force(car)
-    force(cnt)
-    function(cdr) cnt(CONS(car, cdr))
-}
-#' Concatenates two linked lists.
+#' Tests if an element is contained in a list
 #'
-#' @param l1  First list.
-#' @param l2  Second list.
-#' @param cnt Continuation to make the function tail-recursive
-#' @return The concatenation of `l1` and `l2`.
-#' @export
-# FIXME: use a trampoline for cnt.
-llconcat <- function(l1, l2, cnt = identity) {
-    pmatch::cases(l1,
-                  NIL -> cnt(l2),
-                  CONS(car, cdr) -> llconcat(cdr, l2, mk_closure(car, cnt)))
-}
-llconcat <- tailr::loop_transform(llconcat)
-
-
-#' Checks if a linked list contains an element
+#' @param llist A linked list
+#' @param elm   An element
+#' @return `TRUE`` if `elm` is in `llist` and `FALSE` otherwise
 #'
-#' @param llist The linked list
-#' @param elm   The element
-#' @return `TRUE` if `elm` is in `llist` and `FALSE` otherwise
 #' @export
 llcontains <- function(llist, elm) {
     pmatch::cases(
         llist,
         NIL -> FALSE,
-        CONS(car, cdr) ->
-            if (car == elm) TRUE else llcontains(cdr, elm)
+        CONS(car, cdr) -> if (car == elm) TRUE else llcontains(cdr, elm)
     )
 }
 llcontains <- tailr::loop_transform(llcontains)
 
-#' Extract the first `k` elements from a list
+#' Extract the first `k` elements from a linked list.
 #'
-#' @param llist The linked list
-#' @param k     The number of elements to take
-#' @param acc   Accumulator to make the function tail-recursive
-#' @return The first `k` elements of `llist`
+#' @param llist A linked list
+#' @param k     The number of elements to extract
+#' @return A new linked list containing the first `k` elements of `llist`.
+#'
 #' @export
 lltake <- function(llist, k, acc = NIL) {
-    if (k == 0) return(llrev(acc))
-    pmatch::cases(
-        llist,
-        NIL -> stop("There were less than k elements in the list"),
-        CONS(car, cdr) -> lltake(cdr, k - 1, CONS(car, acc))
-    )
+    if (k == 0) {
+        llrev(acc)
+    } else {
+        pmatch::cases(
+            llist,
+            NIL -> stop("There are not k elements in the list"),
+            CONS(car, cdr) -> lltake(cdr, k - 1, CONS(car, acc))
+        )
+    }
 }
 lltake <- tailr::loop_transform(lltake)
 
-#' Remove the first `k` elements from a list
-#'
-#' @param llist The linked list
-#' @param k     The number of elements to remove
-#' @param acc   Accumulator needed to make the function tail-recursive.
-#' @return The list without the first k elements
-#' @export
-lldrop <- function(llist, k, acc = NIL) {
-    if (k == 0) return(llist)
-    pmatch::cases(
-        llist,
-        NIL -> stop("There were less than k elements in the list"),
-        CONS(car, cdr) -> lldrop(cdr, k - 1)
-    )
-}
-lldrop <- tailr::loop_transform(lldrop)
-
-
 #' Map a function over a linked list.
 #'
-#' @param llist The linked list
-#' @param f     The function to apply to all elements in `llist`
-#' @param acc   Accumulator to make the function tail-recursive
+#' @param llist A linked list
+#' @param f     A function
+#' @return A new linked list constructed by applying `f` to all elements of `llist`
+#'
 #' @export
 llmap <- function(llist, f, acc = NIL) {
     pmatch::cases(
@@ -164,26 +112,6 @@ llmap <- function(llist, f, acc = NIL) {
     )
 }
 llmap <- tailr::loop_transform(llmap)
-
-#' Remove elements that do not satisfy a predicate
-#'
-#' @param llist The list
-#' @param p     A predicate function
-#' @param acc   Accumulator to make the function tail-recursive
-#' @export
-llfilter <- function(llist, p, acc = NIL) {
-    pmatch::cases(
-        llist,
-        NIL -> llrev(acc),
-        CONS(car, cdr) ->
-        if (p(car)) {
-            llfilter(cdr, p, CONS(car, acc))
-        } else {
-            llfilter(cdr, p, acc)
-        }
-    )
-}
-llfilter <- tailr::loop_transform(llfilter)
 
 #' Translate a list object into a linked list.
 #'
@@ -201,20 +129,26 @@ llist_from_list <- function(x) {
     llist
 }
 
+#' Translate a linked list into a list.
+#'
+#' @param x The linked list
+#' @return A `list` object containing the same elements as the linked list.
 #' @export
-as.list.llist <- function(x, all.names = FALSE, sorted = FALSE, ...) {
+as.list.llist <- function(x, ...) {
     n <- llength(x)
-    v <- vector("list", length = n)
-    i <- 1
-    while (i <= n) {
-        v[i] <- x$car
-        i <- i + 1
+    l <- vector("list", length = n)
+    for (i in seq_along(l)) {
+        l[[i]] <- x[[1]]
         x <- x$cdr
     }
-    v
+    l
 }
 
+#' Translate a linked list into a vector
+#'
+#' @param x The linked list
+#' @return A vector object containing the same elements as the linked list.
 #' @export
-as.vector.llist <- function(x, mode = "any") {
+as.vector.llist <- function(x, ...) {
     unlist(as.list(x))
 }

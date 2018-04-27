@@ -67,3 +67,44 @@ test_that("we can filter a list", {
     expect_equal(as.vector(first), 1:2)
     expect_equal(as.vector(last), 3:4)
 })
+
+test_that("we can translate a list into a linked list", {
+    ll <- llist_from_list(1:3)
+    expect_true(pmatch::cases(ll, CONS(1, cdr) -> TRUE))
+    expect_true(pmatch::cases(ll, CONS(1, CONS(2, cdr)) -> TRUE))
+    expect_true(pmatch::cases(ll, CONS(1, CONS(2, CONS(3, NIL))) -> TRUE))
+})
+
+test_that("we can translate a linked list into a list and a vector", {
+    l <- as.list(1:3)
+    ll <- llist_from_list(l)
+    expect_equal(l, as.list(ll))
+    expect_equal(1:3, as.vector(ll))
+})
+
+test_that("we can compute the length of a linked lists", {
+    ll <- llist_from_list(1:10)
+    expect_equal(llength(ll), 10)
+})
+
+test_that("we can reverse a list", {
+    ll <- llist_from_list(1:3)
+    rev_ll <- llrev(ll)
+    rev_v <- as.vector(rev_ll)
+    expect_equal(rev_v, c(3, 2, 1))
+})
+
+test_that("we can test for containment", {
+    ll <- llist_from_list(1:3)
+    expect_true(llcontains(ll, 1))
+    expect_true(llcontains(ll, 2))
+    expect_true(llcontains(ll, 3))
+    expect_false(llcontains(ll, 4))
+})
+
+test_that("we can take the first k elements from a list", {
+    ll <- llist_from_list(1:5)
+    expect_equal(1:3, as.vector(lltake(ll, 3)))
+    expect_error(lltake(ll, 6))
+})
+

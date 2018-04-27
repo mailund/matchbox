@@ -2,18 +2,18 @@
 % Please edit documentation in R/linked-lists.R
 \name{llcontains}
 \alias{llcontains}
-\title{Checks if a linked list contains an element}
+\title{Tests if an element is contained in a list}
 \usage{
 llcontains(llist, elm)
 }
 \arguments{
-\item{llist}{The linked list}
+\item{llist}{A linked list}
 
-\item{elm}{The element}
+\item{elm}{An element}
 }
 \value{
-\code{TRUE} if \code{elm} is in \code{llist} and \code{FALSE} otherwise
+\code{TRUE`` if}elm\code{is in}llist\code{and}FALSE` otherwise
 }
 \description{
-Checks if a linked list contains an element
+Tests if an element is contained in a list
 }
