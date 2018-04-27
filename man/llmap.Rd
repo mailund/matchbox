@@ -7,11 +7,12 @@
 llmap(llist, f, acc = NIL)
 }
 \arguments{
-\item{llist}{The linked list}
+\item{llist}{A linked list}
 
-\item{f}{The function to apply to all elements in \code{llist}}
-
-\item{acc}{Accumulator to make the function tail-recursive}
+\item{f}{A function}
+}
+\value{
+A new linked list constructed by applying \code{f} to all elements of \code{llist}
 }
 \description{
 Map a function over a linked list.

@@ -2,20 +2,18 @@
 % Please edit documentation in R/linked-lists.R
 \name{lltake}
 \alias{lltake}
-\title{Extract the first \code{k} elements from a list}
+\title{Extract the first \code{k} elements from a linked list.}
 \usage{
 lltake(llist, k, acc = NIL)
 }
 \arguments{
-\item{llist}{The linked list}
+\item{llist}{A linked list}
 
-\item{k}{The number of elements to take}
-
-\item{acc}{Accumulator to make the function tail-recursive}
+\item{k}{The number of elements to extract}
 }
 \value{
-The first \code{k} elements of \code{llist}
+A new linked list containing the first \code{k} elements of \code{llist}.
 }
 \description{
-Extract the first \code{k} elements from a list
+Extract the first \code{k} elements from a linked list.
 }
