@@ -24,6 +24,14 @@ toString.llist <- function(x, ...) {} # nolint
 
 pmatch::`:=`(llist, NIL | CONS(car, cdr:llist))
 
+#' Tests if a list is empty.
+#'
+#' @param llist The linked list
+#' @return `TRUE` if `llist` is empty (i.e. equal to `NIL`) and `FALSE`
+#'     otherwise.
+#' @export
+ll_is_nil <- function(llist) pmatch::cases(llist, NIL ~ TRUE, otherwise ~ FALSE)
+
 #' Compute the length of a linked list.
 #'
 #' This function computes the length of a linked list by scanning
