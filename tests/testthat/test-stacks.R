@@ -32,3 +32,4 @@ test_that("we get errors if we try to access the top of an empty stack", {
     expect_error(top(stack))
     expect_error(pop(stack))
 })
+

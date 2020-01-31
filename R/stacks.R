@@ -10,14 +10,11 @@ empty_stack <- function() NIL
 #' @param stack A stack
 #' @return `TRUE` if `stack` is empty, `FALSE` otherwise
 #' @export
-is_stack_empty <- function(stack) {
-    pmatch::cases(
-        stack,
-        NIL -> TRUE,
-        otherwise -> FALSE
-    )
-}
-is_stack_empty <- pmatch::transform_cases_function(is_stack_empty)
+is_stack_empty <- case_func(
+    NIL -> TRUE,
+    .   -> FALSE
+
+)
 
 #' Push an element onto a stack.
 #'
@@ -32,27 +29,17 @@ push <- function(stack, elm) CONS(elm, stack)
 #' @param stack A non-empty stack
 #' @return The element at the top of `stack`
 #' @export
-top <- function(stack) {
-    pmatch::cases(
-        stack,
-        # the do.call is a trick to make the function pass the
-        # byte-compile function
-        NIL -> stop("You cannot get the top of an empty stack."),
-        CONS(car, cdr) -> car
-    )
-}
-top <- pmatch::transform_cases_function(top)
+top <- pmatch::case_func(
+    NIL -> stop("You cannot get the top of an empty stack."),
+    CONS(car, cdr) -> car
+)
 
 #' Remove the top element from a stack
 #'
 #' @param stack A non-empty stack
 #' @return A copy of `stack` where the first element has been removed
 #' @export
-pop <- function(stack) {
-    pmatch::cases(
-        stack,
-        CONS(car, cdr) -> cdr,
-        NIL -> stop("You cannot pop an empty stack.")
-    )
-}
-pop <- pmatch::transform_cases_function(pop)
+pop <- pmatch::case_func(
+    CONS(car, cdr) -> cdr,
+    NIL -> stop("You cannot pop an empty stack.")
+)

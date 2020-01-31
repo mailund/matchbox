@@ -17,9 +17,9 @@ test_that("we enqueue and dequeue", {
     bind[front, queue] <- front(queue)
     expect_equal(front, 1)
     expect_equal(as.vector(queue$front), 1:3)
-    expect_true(is_llist_empty(queue$back))
+    expect_true(ll_is_nil(queue$back))
 
     queue <- dequeue(queue)
     expect_equal(as.vector(queue$front), 2:3)
-    expect_true(is_llist_empty(queue$back))
+    expect_true(ll_is_nil(queue$back))
 })

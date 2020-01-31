@@ -103,31 +103,23 @@ empty_red_black_set <- function() RBT_SET_EMPTY
 #' @param tree Tree we check whether is empty.
 #'
 #' @export
-is_red_black_set_empty <- function(tree) {
-    pmatch::cases(
-        tree,
-        RBT_SET_EMPTY -> TRUE,
-        otherwise -> FALSE
-    )
-}
-is_red_black_set_empty <-
-    pmatch::transform_cases_function(is_red_black_set_empty)
+is_red_black_set_empty <- pmatch::case_func(
+    RBT_SET_EMPTY -> TRUE,
+    . -> FALSE
+)
 
-rbt_set_balance <- function(tree) { # fixme: add deletion transformations
-    pmatch::cases(
-        tree,
-        RBT_SET(RBT_BLACK, z, RBT_SET(RBT_RED, x, a, RBT_SET(RBT_RED, y, b, c)), d) ->
+# fixme: add deletion transformations
+rbt_set_balance <- pmatch::case_func(
+    RBT_SET(RBT_BLACK, z, RBT_SET(RBT_RED, x, a, RBT_SET(RBT_RED, y, b, c)), d) ->
         RBT_SET(RBT_RED, y, RBT_SET(RBT_BLACK, x, a, b), RBT_SET(RBT_BLACK, z, c, d)),
-        RBT_SET(RBT_BLACK, z, RBT_SET(RBT_RED, y, RBT_SET(RBT_RED, x, a, b), c), d) ->
+    RBT_SET(RBT_BLACK, z, RBT_SET(RBT_RED, y, RBT_SET(RBT_RED, x, a, b), c), d) ->
         RBT_SET(RBT_RED, y, RBT_SET(RBT_BLACK, x, a, b), RBT_SET(RBT_BLACK, z, c, d)),
-        RBT_SET(RBT_BLACK, x, a, RBT_SET(RBT_RED, y, b, RBT_SET(RBT_RED, z, c, d))) ->
+    RBT_SET(RBT_BLACK, x, a, RBT_SET(RBT_RED, y, b, RBT_SET(RBT_RED, z, c, d))) ->
         RBT_SET(RBT_RED, y, RBT_SET(RBT_BLACK, x, a, b), RBT_SET(RBT_BLACK, z, c, d)),
-        RBT_SET(RBT_BLACK, x, a, RBT_SET(RBT_RED, z, RBT_SET(RBT_RED, y, b, c), d)) ->
+    RBT_SET(RBT_BLACK, x, a, RBT_SET(RBT_RED, z, RBT_SET(RBT_RED, y, b, c), d)) ->
         RBT_SET(RBT_RED, y, RBT_SET(RBT_BLACK, x, a, b), RBT_SET(RBT_BLACK, z, c, d)),
-        otherwise -> tree
-    )
-}
-rbt_set_balance <- pmatch::transform_cases_function(rbt_set_balance)
+    . -> tree
+)
 
 make_thunk <- function(f, ...) {
     force(f)
@@ -160,7 +152,9 @@ set_make_right_cont <- function(tree, cont) {
     }
 }
 
+# abandoned the CPS solution for a quick rewrite
 rbt_set_insert_ <- function(tree, elm, cont) {
+
     if (is_red_black_set_empty(tree)) {
         return(
             trampoline(cont(RBT_SET(RBT_RED, elm, RBT_SET_EMPTY, RBT_SET_EMPTY)))
@@ -175,7 +169,6 @@ rbt_set_insert_ <- function(tree, elm, cont) {
         trampoline(cont(tree))
     }
 }
-rbt_set_insert_ <- tailr::loop_transform(rbt_set_insert_)
 
 #' Insert an element into a red-black tree set.
 #'
@@ -193,22 +186,18 @@ rbt_set_insert <- function(tree, elm) {
 #' @param tree The red-black tree
 #' @param v    The value to search for
 #' @export
-rbt_set_member <- function(tree, v) {
-    pmatch::cases(
-        tree,
-        RBT_SET_EMPTY -> FALSE,
-        RBT_SET(col, val, left, right) -> {
-            if (val == v) {
-                  TRUE
-              } else if (val > v) {
-                  rbt_set_member(left, v)
-              } else {
-                  rbt_set_member(right, v)
-              }
+rbt_set_member <- pmatch::case_trfunc(v,
+    RBT_SET_EMPTY -> FALSE,
+    RBT_SET(col, val, left, right) -> {
+        if (val == v) {
+            TRUE
+        } else if (val > v) {
+            rbt_set_member(left, v)
+        } else {
+            rbt_set_member(right, v)
         }
-    )
-}
-rbt_set_member <- tailr::loop_transform(rbt_set_member)
+    }
+)
 
 #' Create an empty red-black tree representation for a map
 #'
@@ -220,74 +209,73 @@ empty_red_black_map <- function() RBT_MAP_EMPTY
 #' @param tree Tree we check whether is empty.
 #'
 #' @export
-is_red_black_map_empty <- function(tree) {
+is_red_black_map_empty <- pmatch::case_func(
+    RBT_MAP_EMPTY -> TRUE,
+    . -> FALSE
+)
+
+# fixme: add deletion transformations
+rbt_map_balance <- pmatch::case_func(
+    RBT_MAP(
+        RBT_BLACK,
+        zkey, zval,
+        RBT_MAP(
+            RBT_RED, xkey, xval, a,
+            RBT_MAP(RBT_RED, ykey, yval, b, c)
+        ),
+        d
+    ) -> RBT_MAP(
+        RBT_RED,
+        ykey, yval,
+        RBT_MAP(RBT_BLACK, xkey, xval, a, b),
+        RBT_MAP(RBT_BLACK, zkey, zval, c, d)
+    ),
+
+    RBT_MAP(
+        RBT_BLACK,
+        zkey, zval,
+        RBT_MAP(RBT_RED, ykey, yval, RBT_MAP(RBT_RED, xkey, xval, a, b), c),
+        d
+    ) -> RBT_MAP(
+        RBT_RED,
+        ykey, yval,
+        RBT_MAP(RBT_BLACK, xkey, xval, a, b),
+        RBT_MAP(RBT_BLACK, zkey, zval, c, d)
+    ),
+
+    RBT_MAP(
+        RBT_BLACK,
+        xkey, xval,
+        a,
+        RBT_MAP(RBT_RED, ykey, yval, b, RBT_MAP(RBT_RED, zkey, zval, c, d))
+    ) -> RBT_MAP(
+        RBT_RED,
+        ykey, yval,
+        RBT_MAP(RBT_BLACK, xkey, xval, a, b),
+        RBT_MAP(RBT_BLACK, zkey, zval, c, d)
+    ),
+
+    RBT_MAP(
+        RBT_BLACK,
+        xkey, xval,
+        a,
+        RBT_MAP(RBT_RED, zkey, zval, RBT_MAP(RBT_RED, ykey, yval, b, c), d)
+    ) -> RBT_MAP(
+        RBT_RED,
+        ykey, yval,
+        RBT_MAP(RBT_BLACK, xkey, xval, a, b),
+        RBT_MAP(RBT_BLACK, zkey, zval, c, d)
+    ),
+
+    . -> tree
+)
+
+    function(tree) {
     pmatch::cases(
         tree,
-        RBT_MAP_EMPTY -> TRUE,
-        otherwise -> FALSE
+
     )
 }
-is_red_black_map_empty <-
-    pmatch::transform_cases_function(is_red_black_map_empty)
-
-rbt_map_balance <- function(tree) { # fixme: add deletion transformations
-    pmatch::cases(
-        tree,
-        RBT_MAP(
-            RBT_BLACK,
-            zkey, zval,
-            RBT_MAP(
-                RBT_RED, xkey, xval, a,
-                RBT_MAP(RBT_RED, ykey, yval, b, c)
-            ),
-            d
-        ) -> RBT_MAP(
-            RBT_RED,
-            ykey, yval,
-            RBT_MAP(RBT_BLACK, xkey, xval, a, b),
-            RBT_MAP(RBT_BLACK, zkey, zval, c, d)
-        ),
-
-        RBT_MAP(
-            RBT_BLACK,
-            zkey, zval,
-            RBT_MAP(RBT_RED, ykey, yval, RBT_MAP(RBT_RED, xkey, xval, a, b), c),
-            d
-        ) -> RBT_MAP(
-            RBT_RED,
-            ykey, yval,
-            RBT_MAP(RBT_BLACK, xkey, xval, a, b),
-            RBT_MAP(RBT_BLACK, zkey, zval, c, d)
-        ),
-
-        RBT_MAP(
-            RBT_BLACK,
-            xkey, xval,
-            a,
-            RBT_MAP(RBT_RED, ykey, yval, b, RBT_MAP(RBT_RED, zkey, zval, c, d))
-        ) -> RBT_MAP(
-            RBT_RED,
-            ykey, yval,
-            RBT_MAP(RBT_BLACK, xkey, xval, a, b),
-            RBT_MAP(RBT_BLACK, zkey, zval, c, d)
-        ),
-
-        RBT_MAP(
-            RBT_BLACK,
-            xkey, xval,
-            a,
-            RBT_MAP(RBT_RED, zkey, zval, RBT_MAP(RBT_RED, ykey, yval, b, c), d)
-        ) -> RBT_MAP(
-            RBT_RED,
-            ykey, yval,
-            RBT_MAP(RBT_BLACK, xkey, xval, a, b),
-            RBT_MAP(RBT_BLACK, zkey, zval, c, d)
-        ),
-
-        otherwise -> tree
-    )
-}
-rbt_map_balance <- pmatch::transform_cases_function(rbt_map_balance)
 
 map_make_left_cont <- function(tree, cont) {
     force(tree)
@@ -327,7 +315,6 @@ rbt_map_insert_ <- function(tree, key, val, cont) {
         trampoline(cont(new_tree))
     }
 }
-rbt_map_insert_ <- tailr::loop_transform(rbt_map_insert_)
 
 #' Insert an element into a red-black tree map
 #'
@@ -347,24 +334,18 @@ rbt_map_insert <- function(tree, key, val) {
 #' @param tree The red-black tree
 #' @param k    The key to search for
 #' @export
-rbt_map_member <- function(tree, k) {
-    t <- TRUE
-    f <- FALSE
-    pmatch::cases(
-        tree,
-        RBT_MAP_EMPTY -> f,
-        RBT_MAP(col, key, val, left, right) -> {
-            if (key == k) {
-                  t
-              } else if (key > k) {
-                  rbt_map_member(left, k)
-              } else {
-                  rbt_map_member(right, k)
-              }
+rbt_map_member <- pmatch::case_trfunc(
+    RBT_MAP_EMPTY -> FALSE,
+    RBT_MAP(col, key, val, left, right) -> {
+        if (key == k) {
+            TRUE
+        } else if (key > k) {
+            rbt_map_member(left, k)
+        } else {
+            rbt_map_member(right, k)
         }
-    )
-}
-rbt_map_member <- tailr::loop_transform(rbt_map_member)
+    }
+)
 
 
 #' Get the value associated with a key.
@@ -372,19 +353,15 @@ rbt_map_member <- tailr::loop_transform(rbt_map_member)
 #' @param tree The red-black tree
 #' @param k    The key to search for
 #' @export
-rbt_map_get <- function(tree, k) {
-    pmatch::cases(
-        tree,
-        RBT_MAP_EMPTY -> stop("The key was not found."),
-        RBT_MAP(col, key, val, left, right) -> {
-            if (key == k) {
-                val
-            } else if (key > k) {
-                rbt_map_get(left, k)
-            } else {
-                rbt_map_get(right, k)
-            }
+rbt_map_get <- pmatch::case_trfunc(
+    RBT_MAP_EMPTY -> stop("The key was not found."),
+    RBT_MAP(col, key, val, left, right) -> {
+        if (key == k) {
+            val
+        } else if (key > k) {
+            rbt_map_get(left, k)
+        } else {
+            rbt_map_get(right, k)
         }
-    )
-}
-rbt_map_get <- tailr::loop_transform(rbt_map_get)
+    }
+)

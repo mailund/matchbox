@@ -30,7 +30,10 @@ pmatch::`:=`(llist, NIL | CONS(car, cdr:llist))
 #' @return `TRUE` if `llist` is empty (i.e. equal to `NIL`) and `FALSE`
 #'     otherwise.
 #' @export
-ll_is_nil <- function(llist) pmatch::cases(llist, NIL ~ TRUE, otherwise ~ FALSE)
+ll_is_nil <- pmatch::case_func(
+    NIL -> TRUE,
+    . -> FALSE
+)
 
 #' Compute the length of a linked list.
 #'
@@ -42,14 +45,10 @@ ll_is_nil <- function(llist) pmatch::cases(llist, NIL ~ TRUE, otherwise ~ FALSE)
 #' @return The length of `llist`
 #'
 #' @export
-llength <- function(llist, acc = 0) {
-    pmatch::cases(
-        llist,
-        NIL -> acc,
-        CONS(car, cdr) -> llength(cdr, acc + 1)
-    )
-}
-llength <- tailr::loop_transform(llength)
+llength <- pmatch::case_trfunc(acc = 0,
+    NIL -> acc,
+    CONS(car, cdr) -> llength(cdr, acc + 1)
+)
 
 #' Reverse a linked list.
 #'
@@ -60,14 +59,10 @@ llength <- tailr::loop_transform(llength)
 #' @return A list containing the elements in `llist` in reverse order.
 #'
 #' @export
-llrev <- function(llist, acc = NIL) {
-    pmatch::cases(
-        llist,
-        NIL -> acc,
-        CONS(car, cdr) -> llrev(cdr, CONS(car, acc))
-    )
-}
-llrev <- tailr::loop_transform(llrev)
+llrev <- pmatch::case_trfunc(acc = NIL,
+    NIL -> acc,
+    CONS(car, cdr) -> llrev(cdr, CONS(car, acc))
+)
 
 #' Tests if an element is contained in a list
 #'
@@ -76,14 +71,11 @@ llrev <- tailr::loop_transform(llrev)
 #' @return `TRUE`` if `elm` is in `llist` and `FALSE` otherwise
 #'
 #' @export
-llcontains <- function(llist, elm) {
-    pmatch::cases(
-        llist,
-        NIL -> FALSE,
-        CONS(car, cdr) -> if (car == elm) TRUE else llcontains(cdr, elm)
-    )
-}
-llcontains <- tailr::loop_transform(llcontains)
+llcontains <- pmatch::case_trfunc(elm,
+    NIL -> FALSE,
+    CONS(car, cdr) -> if (elm == car) TRUE else llcontains(cdr, elm)
+)
+
 
 #' Extract the first `k` elements from a linked list.
 #'
@@ -92,18 +84,12 @@ llcontains <- tailr::loop_transform(llcontains)
 #' @return A new linked list containing the first `k` elements of `llist`.
 #'
 #' @export
-lltake <- function(llist, k, acc = NIL) {
-    if (k == 0) {
-        llrev(acc)
-    } else {
-        pmatch::cases(
-            llist,
-            NIL -> stop("There are not k elements in the list"),
-            CONS(car, cdr) -> lltake(cdr, k - 1, CONS(car, acc))
-        )
-    }
-}
-lltake <- tailr::loop_transform(lltake)
+lltake <- pmatch::case_trfunc(k, acc = NIL,
+    NIL -> stop("There are not k elements in the list"),
+    CONS(car, cdr) ->
+        if (k == 0) llrev(acc) else lltake(cdr, k - 1, CONS(car, acc))
+)
+
 
 #' Map a function over a linked list.
 #'

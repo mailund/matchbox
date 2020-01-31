@@ -11,7 +11,7 @@ empty_queue <- function() list(front = NIL, back = NIL)
 #' @param queue The queue
 #' @export
 is_queue_empty <- function(queue) {
-    is_llist_empty(queue$front) && is_llist_empty(queue$back)
+    ll_is_nil(queue$front) && ll_is_nil(queue$back)
 }
 
 #' Add an element to the back of a queue
@@ -30,7 +30,7 @@ enqueue <- function(queue, elm) {
 #' @return modified queue
 move_lists <- function(queue) {
     # only move if the front list is empty
-    if (is_llist_empty(queue$front)) {
+    if (ll_is_nil(queue$front)) {
         queue$front <- llrev(queue$back)
         queue$back <- NIL
     }
@@ -45,14 +45,14 @@ move_lists <- function(queue) {
 #' @export
 front <- function(queue) {
     queue <- move_lists(queue)
-    front <- pmatch::cases(
-        queue$front,
+    ## FIXME: not that elegant
+    match <- pmatch::case_func(
         NIL -> stop("You cannot get the top element from an empty queue"),
         CONS(car, cdr) -> car
     )
+    front <- match(queue$front)
     list(front = front, queue = queue)
 }
-front <- pmatch::transform_cases_function(front)
 
 
 
@@ -63,11 +63,10 @@ front <- pmatch::transform_cases_function(front)
 #' @export
 dequeue <- function(queue) {
     queue <- move_lists(queue)
-    queue$front <- pmatch::cases(
-        queue$front,
-        NIL -> stop("You cannot remove the top element from an empty queue"),
+    match <- pmatch::case_func(
+        NIL -> stop("You cannot get the top element from an empty queue"),
         CONS(car, cdr) -> cdr
     )
+    queue$front <- match(queue$front)
     queue
 }
-dequeue <- pmatch::transform_cases_function(dequeue)

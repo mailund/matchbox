@@ -2,22 +2,25 @@ context("test-linked-lists.R")
 
 test_that("we can construct linked lists", {
     lst <- NIL
+    f <- pmatch::case_func(
+        NIL -> 1
+    )
     expect_equal(
-        pmatch::cases(lst, NIL -> 1),
+        f(lst),
         1
     )
     expect_true(is_llist_empty(lst))
 
     lst <- CONS(2, NIL)
+    g <- pmatch::case_func(
+        NIL -> 1,
+        CONS(elm, NIL) -> elm
+    )
     expect_equal(
-        pmatch::cases(
-            lst,
-            NIL -> 1,
-            CONS(elm, NIL) -> elm
-        ),
+        g(lst),
         2
     )
-    expect_false(is_llist_empty(lst))
+    expect_false(ll_is_nil(lst))
 })
 
 test_that("we can compute the length of a list", {
@@ -70,10 +73,20 @@ test_that("we can filter a list", {
 
 test_that("we can translate a list into a linked list", {
     ll <- llist_from_list(1:3)
-    expect_true(pmatch::cases(ll, CONS(1, cdr) -> TRUE))
-    expect_true(pmatch::cases(ll, CONS(1, CONS(2, cdr)) -> TRUE))
-    expect_true(pmatch::cases(ll, CONS(1, CONS(2, CONS(3, NIL))) -> TRUE))
+    f <- pmatch::case_func(
+        CONS(1, cdr) -> TRUE
+    )
+    g <- pmatch::case_func(
+        CONS(1, CONS(2, cdr)) -> TRUE
+    )
+    h <- pmatch::case_func(
+        CONS(1, CONS(2, CONS(3, NIL))) -> TRUE
+    )
+    expect_true(f(ll))
+    expect_true(g(ll))
+    expect_true(h(ll))
 })
+
 
 test_that("we can translate a linked list into a list and a vector", {
     l <- as.list(1:3)
